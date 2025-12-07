@@ -78,13 +78,13 @@
             bottom: 1.5rem;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #fff; /* Light background to stand out from the utility box */
+            background-color: #fff;
             color: #1e293b;
             padding: 1.25rem;
             border-radius: 0.75rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
             transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 60; /* Higher z-index */
+            z-index: 60;
             opacity: 0;
             pointer-events: none;
             max-width: 90%;
@@ -198,24 +198,19 @@
     </div>
 
     <div id="donationPopup" class="donation-popup" role="dialog" aria-modal="false" aria-labelledby="donation-heading">
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between w-full">
             <h4 id="donation-heading" class="text-lg font-extrabold text-indigo-600 flex items-center">
-                <i class="fas fa-heart text-red-500 mr-2"></i> Enjoying Gradient Maker?
+                <i class="fas fa-heart text-red-500 mr-2"></i> Support via Crypto
             </h4>
             <button id="closeDonationBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-full transition-colors duration-200" aria-label="Close donation request">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <p class="text-sm text-slate-600 mt-2 mb-4">
-            If this free tool is saving you time, consider a small donation to help keep it running and ad-free. Thank you!
+        <p class="text-sm text-slate-600 mt-2 mb-4 text-center">
+            Enjoy using this Ad-free tool? Please consider donating bitcoin using the qr code below..
         </p>
-        <div class="flex justify-end gap-3">
-            <button id="maybeLaterDonationBtn" class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors duration-200">
-                Maybe Later
-            </button>
-            <a href="your_donation_page_link" target="_blank" class="px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded-lg shadow-md hover:bg-indigo-600 transition-colors duration-200 inline-flex items-center active:scale-95">
-                <i class="fas fa-dollar-sign mr-1"></i> Donate Now
-            </a>
+        <div class="flex justify-center">
+            <img src="images/qr_code.png" alt="QR Code for Crypto Donation" class="w-36 h-36 border-4 border-slate-100 rounded-lg shadow-inner p-1">
         </div>
     </div>
     <script>
@@ -243,7 +238,7 @@
         // NEW DONATION ELEMENTS
         const donationPopup = document.getElementById('donationPopup');
         const closeDonationBtn = document.getElementById('closeDonationBtn');
-        const maybeLaterDonationBtn = document.getElementById('maybeLaterDonationBtn');
+        // Removed maybeLaterDonationBtn reference
 
         // State Variables
         let gradientType = 'linear-gradient';
@@ -581,6 +576,11 @@
 
         addColorBtn.addEventListener('click', addColorStop);
         randomizeBtn.addEventListener('click', generateRandomColors);
+        closeMessageBtn.addEventListener('click', () => {
+            messageBox.style.cssText = 'opacity: 0; bottom: -999px; pointer-events: none;';
+            messageBox.setAttribute('aria-hidden', 'true');
+        });
+        closeDonationBtn.addEventListener('click', hideDonationPopup); // Listener for the new close button
 
         copyBtn.addEventListener('click', () => {
             cssOutput.select();
@@ -599,46 +599,29 @@
         shareBtn.addEventListener('click', () => {
             const shareUrl = generateShareURL();
             navigator.clipboard.writeText(shareUrl)
-                .then(() => {
-                    showMessage('Share URL copied! Send this link to anyone. 🎉', 3000);
-                })
-                .catch(err => {
-                    console.error('Could not copy URL:', err);
-                    showMessage('Failed to copy URL. Browser clipboard access denied.', 3000);
-                });
+                .then(() => showMessage('Share URL copied to clipboard! 📋', 2000))
+                .catch(() => showMessage('Failed to copy URL.', 2000));
         });
-        
-        closeMessageBtn.addEventListener('click', () => {
-            messageBox.style.cssText = 'opacity: 0; bottom: -999px; pointer-events: none;';
-            messageBox.setAttribute('aria-hidden', 'true');
-        });
-
-        // Donation Popup Event Listeners
-        closeDonationBtn.addEventListener('click', hideDonationPopup);
-        maybeLaterDonationBtn.addEventListener('click', hideDonationPopup);
-
 
         // --- Initialization ---
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const loadedFromURL = loadFromURL();
-            if (!loadedFromURL) {
-                // Default gradient if no URL parameter is found
+        const initialize = () => {
+            if (!loadFromURL()) {
+                // Default gradient if no URL parameter is present
                 colors = [
-                    { id: 1, color: '#4f46e5', position: 0 }, // indigo-600
-                    { id: 2, color: '#f97316', position: 100 }  // orange-500
+                    { id: nextColorId++, color: '#4f46e5', position: 0 },
+                    { id: nextColorId++, color: '#ec4899', position: 100 }
                 ];
-                nextColorId = 3;
-                colors.forEach(color => {
-                    colorStopsContainer.appendChild(createColorStopElement(color));
-                });
-                setActiveButton(linearBtn);
+                colors.forEach(color => colorStopsContainer.appendChild(createColorStopElement(color)));
                 updateGradient();
             }
 
-            // Delayed, non-annoying prompt for donation (10 seconds)
+            // Show donation popup after a delay, e.g., 10 seconds, only if not seen this session
             setTimeout(showDonationPopup, 10000); 
-        });
+        };
+
+        initialize();
+
     </script>
 </body>
 </html>
