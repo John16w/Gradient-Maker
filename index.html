@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gradient Maker: CSS Gradient Editor & Generator</title>
+    <title>CSS Gradient Maker: The Ultimate CSS Gradient Editor</title>
     <meta name="description" content="An advanced, responsive CSS gradient editor to create stunning linear, radial, and conic gradients with real-time preview, code output, and sharing.">
     <meta name="keywords" content="CSS gradient editor, linear gradient, radial gradient, conic gradient, gradient generator, CSS tool, color stops, Tailwind CSS">
     <link rel="canonical" href="https://example.com/gradient-studio">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -16,12 +17,81 @@
     <link rel="manifest" href="images/site.webmanifest">
 
     <meta name="google-site-verification" content="QMSUmwCxzcJ3c57AEPM4MD2KlCEME-BZnQ3foguYDxU" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
+    
+    <style type="text/css">
+        /* Styles for the range slider track */
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 8px;
+            border-radius: 4px;
+            background: #475569;
+        }
+        input[type="range"]::-moz-range-track {
+            height: 8px;
+            border-radius: 4px;
+            background: #475569;
+        }
+
+        /* Styles for the range slider thumb */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #4f46e5;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-top: -4px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+            transition: background 0.2s;
+        }
+
+        input[type="range"]:hover::-webkit-slider-thumb {
+            background: #6366f1;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #4f46e5;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+            transition: background 0.2s;
+        }
+        input[type="range"]:hover::-moz-range-thumb {
+            background: #6366f1;
+        }
+
+        /* Active state for gradient type buttons */
+        .active-type {
+            background-color: #4f46e5 !important;
+            color: white !important;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3), 0 2px 4px -2px rgba(79, 70, 229, 0.2) !important;
+            border: 2px solid #4f46e5;
+        }
+
+        /* Styles for the message box */
+        .message-box {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #334155;
+            color: #fff;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1-px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+            transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
 </head>
-<body class="bg-gray-900 min-h-screen text-slate-200 selection:bg-indigo-700">
+<body class="bg-gray-900 min-h-screen text-slate-200 selection:bg-indigo-700" style="font-family: 'Inter', sans-serif;">
     
     <main class="w-full max-w-5xl mx-auto space-y-12 p-6 sm:p-10">
         <header class="text-center pt-4 pb-2">
@@ -56,7 +126,7 @@
                         <i class="fas fa-palette text-indigo-400"></i> Gradient Type
                     </h3>
                     <div class="flex space-x-3 p-1 bg-gray-700 rounded-xl">
-                        <button id="linearBtn" class="flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 bg-gray-700 text-slate-300 hover:bg-gray-600 active:scale-98 active-type" role="radio" aria-checked="true">Linear</button>
+                        <button id="linearBtn" class="flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 active-type" role="radio" aria-checked="true">Linear</button>
                         <button id="radialBtn" class="flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 bg-gray-700 text-slate-300 hover:bg-gray-600 active:scale-98" role="radio" aria-checked="false">Radial</button>
                         <button id="conicBtn" class="flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 bg-gray-700 text-slate-300 hover:bg-gray-600 active:scale-98" role="radio" aria-checked="false">Conic</button>
                     </div>
@@ -71,7 +141,7 @@
                 
                 <div class="space-y-4 pt-2">
                     <h3 class="text-xl font-bold flex items-center gap-2 text-slate-200" id="opacity-label">
-                        <i class="fas fa-fill-drip text-indigo-400"></i> Opacity: <span id="opacityValue" class="text-indigo-400 ml-2 font-extrabold text-2xl">100%</span>
+                        <i class="fas fa-adjust text-indigo-400"></i> Opacity: <span id="opacityValue" class="text-indigo-400 ml-2 font-extrabold text-2xl">100%</span>
                     </h3>
                     <input id="opacitySlider" type="range" min="0" max="100" value="100" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" aria-valuetext="100 percent" aria-labelledby="opacity-label">
                 </div>
@@ -114,7 +184,7 @@
         <i class="fas fa-info-circle text-indigo-400" aria-hidden="true"></i>
         <span class="font-medium"></span>
         <button id="closeMessageBtn" class="text-slate-400 p-1 rounded-full hover:bg-slate-700 transition-colors duration-200 ml-auto" aria-label="Close notification">
-            <i class="fas fa-times w-4 h-4 flex items-center justify-center" aria-hidden="true"></i>
+            <i class="fas fa-trash w-4 h-4 flex items-center justify-center" aria-hidden="true"></i>
         </button>
     </div>
     
